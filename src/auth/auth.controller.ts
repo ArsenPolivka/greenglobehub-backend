@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, Res, HttpStatus, Get, Param } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 
@@ -7,15 +7,15 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('sign-up')
-  async signUp(@Body('email') email: string, @Body('password') password: string, @Res() res: Response) {
+  async signUp(@Body('name') name, @Body('email') email: string, @Body('password') password: string, @Body('confirmPassword') confirmPassword, @Res() res: Response) {
     try {
-      const result = await this.authService.signUp(email, password);
+      const result = await this.authService.signUp(name, email, password, confirmPassword);
 
       if (result.session) {
         res.cookie('authToken', result.session.access_token, {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production',
-          maxAge: 3600000, // 1 hour
+          maxAge: 3600000,
         });
       }
 
@@ -48,6 +48,16 @@ export class AuthController {
   async getUser(@Body('token') token: string, @Res() res) {
     try {
       const data = await this.authService.getUser(token);
+      return res.status(HttpStatus.OK).json(data);
+    } catch (error) {
+      return res.status(HttpStatus.BAD_REQUEST).json({ message: error.message });
+    }
+  }
+
+  @Get('user/:id')
+  async getUserById(@Param('id') uniqueId: string, @Res() res: Response){
+    try {
+      const data = await this.authService.getUserById(uniqueId);
       return res.status(HttpStatus.OK).json(data);
     } catch (error) {
       return res.status(HttpStatus.BAD_REQUEST).json({ message: error.message });
