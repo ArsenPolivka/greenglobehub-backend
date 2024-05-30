@@ -21,10 +21,6 @@ export class ArticlesController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadImage(@UploadedFile() file: Express.Multer.File) {
-    if (!file) {
-      throw new Error('No file provided');
-    }
-
     return this.articlesService.uploadImage(file);
   }
 
