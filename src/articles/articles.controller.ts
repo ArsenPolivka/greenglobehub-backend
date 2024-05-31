@@ -8,14 +8,14 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
-  @Get('search')
-  async search(@Query('query') query: string) {
-    return this.articlesService.search(query);
-  }
-
   @Post()
   create(@Body() createArticleDto: CreateArticleDto) {
     return this.articlesService.create(createArticleDto);
+  }
+
+  @Get('search')
+  async search(@Query('query') query: string) {
+    return this.articlesService.search(query);
   }
 
   @Post('upload')
