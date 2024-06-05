@@ -6,7 +6,7 @@ import * as fs from 'fs-extra';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 
-import { sanitizeFilename } from 'src/utils/helpers';
+import { sanitizeFilename } from 'utils/helpers';
 import { AuthController } from 'src/auth/auth.controller';
 import { AuthService } from 'src/auth/auth.service';
 
@@ -61,6 +61,11 @@ export class ArticlesService {
     return data;
   }
 
+  private handleError(error: any, message: string) {
+    console.error(`${message}: ${error.message}`);
+    throw new Error(`${message}: ${error.message}`);
+  }
+
   async uploadImage(file: Express.Multer.File) {
     if (!file) {
       throw new Error('No file provided');
@@ -84,8 +89,7 @@ export class ArticlesService {
 
       return { data, imageUrl };
     } catch (error) {
-      console.error(`Error uploading image: ${error.message}`);
-      throw new Error(`Error uploading image: ${error.message}`);
+      this.handleError(error, 'Error uploading image');
     } finally {
       await fs.remove(file.path);
     }
@@ -97,7 +101,7 @@ export class ArticlesService {
       .select('*');
 
     if (error) {
-      throw new Error(`Error fetching articles: ${error.message}`);
+      this.handleError(error, 'Error fetching articles');
     }
 
     return data;
@@ -111,7 +115,7 @@ export class ArticlesService {
       .single();
 
     if (error) {
-      throw new Error(`Error fetching article with id ${id}: ${error.message}`);
+      this.handleError(error, `Error fetching article with id ${id}`);
     }
 
     return data;
@@ -128,7 +132,7 @@ export class ArticlesService {
       .select();
 
     if (error) {
-      throw new Error(`Error updating article with id ${id}: ${error.message}`);
+      this.handleError(error, `Error updating article with id ${id}`);
     }
 
     return data;
@@ -142,7 +146,7 @@ export class ArticlesService {
       .select();
 
     if (error) {
-      throw new Error(`Error removing article with id ${id}: ${error.message}`);
+      this.handleError(error, `Error deleting article with id ${id}`);
     }
 
     return {
@@ -157,7 +161,7 @@ export class ArticlesService {
       .ilike('title', `%${query}%`);
 
     if (error) {
-      throw new Error(`Error searching articles: ${error.message}`);
+      this.handleError(error, 'Error searching articles');
     }
 
     return data;
