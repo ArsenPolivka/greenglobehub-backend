@@ -7,9 +7,10 @@ import { AuthModule } from './auth/auth.module';
 import { ArticlesModule } from './articles/articles.module';
 import { InitiativesModule } from './initiatives/initiatives.module';
 import { EventsModule } from './events/events.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
-  imports: [CategoriesModule, GreenAiModule, AuthModule, ArticlesModule, InitiativesModule, EventsModule],
+  imports: [CategoriesModule, GreenAiModule, AuthModule, ArticlesModule, InitiativesModule, EventsModule, EmailModule],
   controllers: [AppController],
   providers: [AppService],
 })
