@@ -1,8 +1,18 @@
+import { IsEmail, IsNotEmpty, IsString, MinLength } from "class-validator";
+
 export class CreateAuthDto {
-  readonly uniqueId: string;
+  @IsString()
+  @IsNotEmpty()
   readonly name: string;
+
+  @IsEmail()
   readonly email: string;
-  readonly role: string;
-  readonly articles: Array<string>;
-  readonly articlesLiked: Array<string>;
+
+  @IsString()
+  @MinLength(8)
+  readonly password: string;
+
+  @IsString()
+  @MinLength(8)
+  readonly confirmPassword: string;
 }
